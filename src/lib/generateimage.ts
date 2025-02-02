@@ -28,7 +28,7 @@ export async function generateCanvasImage(): Promise<Buffer> {
       `https://apis.roblox.com/cloud/v2/universes/${UNIVERSE_ID}/data-stores/PixelGrid/entries/PixelGrid`,
       {
         headers: {
-          "x-api-key": API_KEY!,
+          "x-api-key": API_KEY,
         },
       }
     );
