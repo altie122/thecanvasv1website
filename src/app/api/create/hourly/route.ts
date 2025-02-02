@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
   const img = await generateCanvasImage();
-  const unixTime = Date.now()/1000;
+  const unixTime = Math.floor(Date.now() / 1000);
   const fimeName = `snapshot_${unixTime}.png`;
   const URL = await uploadThing({ name: fimeName, data: img.buffer });
   await fetch(
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        content: `<t:${unixTime}:F> New snapshot uploaded!\n<${URL}> ${URL}`,
+        content: `<t:${unixTime}:F> New snapshot uploaded! ${URL}`,
       }),
     }
   )
