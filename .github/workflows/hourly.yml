@@ -7,13 +7,14 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: pnpm/action-setup@v2
         with:
-          node-version: 18
-          cache: "npm"
+          version: 7
+      - name: Install dependencies
+        run: pnpm install
       - run: node scripts/hourlyfetch.js
         env:
           CREATE_API_KEY: ${{ secrets.CREATE_API_KEY }}
