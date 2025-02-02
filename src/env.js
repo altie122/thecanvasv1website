@@ -9,6 +9,8 @@ export const env = createEnv({
   server: {
     // DATABASE_URL: z.string().url(),
     // DATABASE_AUTH_TOKEN: z.string().optional(),
+    ROBLOX_UNIVERSE_ID: z.string(),
+    ROBLOX_API_KEY: z.string(),
     DISCORD_WEBHOOK: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
@@ -31,6 +33,8 @@ export const env = createEnv({
   runtimeEnv: {
     // DATABASE_URL: process.env.DATABASE_URL,
     // DATABASE_AUTH_TOKEN: process.env.DATABASE_AUTH_TOKEN,
+    ROBLOX_UNIVERSE_ID: process.env.ROBLOX_UNIVERSE_ID,
+    ROBLOX_API_KEY: process.env.ROBLOX_API_KEY,
     DISCORD_WEBHOOK: process.env.DISCORD_WEBHOOK,
     NODE_ENV: process.env.NODE_ENV,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,

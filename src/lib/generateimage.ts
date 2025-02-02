@@ -3,9 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import sharp from "sharp";
+import { env } from "@/env";
 
-const UNIVERSE_ID = process.env.ROBLOX_UNIVERSE_ID;
-const API_KEY = process.env.ROBLOX_API_KEY;
+const UNIVERSE_ID = env.ROBLOX_UNIVERSE_ID;
+const API_KEY = env.ROBLOX_API_KEY;
 const GRID_SIZE = 100;
 const SCALE_FACTOR = 10; // Each pixel will be 10x10 in the output
 const OUTPUT_SIZE = GRID_SIZE * SCALE_FACTOR;

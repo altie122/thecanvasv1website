@@ -1,4 +1,5 @@
 import { uploadThing, generateCanvasImage } from "@/lib";
+import { env } from "@/env";
 
 export async function GET(request: Request) {
   const API_KEY = process.env.CREATE_API_KEY;
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
   const fimeName = `snapshot_${unixTime}.png`;
   const URL = await uploadThing({ name: fimeName, data: img.buffer });
   await fetch(
-    process.env.DISCORD_WEBHOOK,
+    env.DISCORD_WEBHOOK,
     {
       method: "POST",
       headers: {
