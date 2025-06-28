@@ -50,21 +50,23 @@ export async function generateCanvasImage(): Promise<Buffer> {
     // Fill in the pixels from the data
     Object.entries(pixelData).forEach(([coordString, colorData]) => {
       const coords = JSON.parse(coordString);
-      const x = coords[0] - GRID_SIZE / 2;
-      const y = coords[1] - GRID_SIZE / 2;
-
-      // Convert to array indices
-      const arrayX = x + GRID_SIZE / 2;
-      const arrayY = y + GRID_SIZE / 2;
+      // Adjust x and y to be 0-indexed directly from the 1-indexed Roblox coordinates
+      // Assuming coords[0] is the x-coordinate and coords[1] is the y-coordinate from Roblox
+      const x = coords[0] - 1; // Convert 1-based x to 0-based x
+      const y = coords[1] - 1; // Convert 1-based y to 0-based y
 
       // Calculate array index
-      const index = Math.floor(arrayY) * GRID_SIZE * 4 + Math.floor(arrayX) * 4;
+      const index = y * GRID_SIZE * 4 + x * 4;
 
       if (index >= 0 && index < imageData.length - 3) {
         imageData[index] = Math.round(colorData.r * 255); // R
         imageData[index + 1] = Math.round(colorData.g * 255); // G
         imageData[index + 2] = Math.round(colorData.b * 255); // B
         imageData[index + 3] = 255; // Alpha (fully opaque)
+      } else {
+        console.warn(
+          `Coordinates (${coords[0]}, ${coords[1]}) resulted in out-of-bounds index: ${index}`
+        );
       }
     });
 
