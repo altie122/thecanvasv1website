@@ -27,9 +27,26 @@ export const UpdatePixel = mutation({
       .withIndex("by_coordinates", (q) => q.eq("x", args.x).eq("y", args.y))
       .first();
     if (pixel) {
-      await ctx.db.patch(pixel._id, { x: args.x, y: args.y, color: args.color });
+      try {
+        await ctx.db.patch(pixel._id, {
+          x: args.x,
+          y: args.y,
+          color: args.color,
+        });
+      } catch (error) {
+        return error;
+      }
     } else {
-      await ctx.db.insert("Pixels", { x: args.x, y: args.y, color: args.color });
-    }
+      try {
+        await ctx.db.insert("Pixels", {
+          x: args.x,
+          y: args.y,
+          color: args.color,
+        });
+      } catch (error) {
+        return error;
+      }
+    };
+    return "Success";
   },
 });
