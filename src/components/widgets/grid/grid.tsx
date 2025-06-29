@@ -8,7 +8,7 @@ import { useQuery } from "convex/react";
 
 export default function Grid({ gridSize, pixelSize }: { gridSize: number; pixelSize: number }) {
   // Ensure pixels is never undefined by providing a default empty array
-  const pixels = useQuery(api.pixels.GetAllPixels) || [];
+  const pixels = useQuery(api.pixels.GetAllPixels) ?? [];
 
   // Create a map for quick lookup of pixel colors by their coordinates
   // This helps in efficiently setting the color for each grid cell.
