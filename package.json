@@ -17,12 +17,14 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
+    "convex": "convex"
   },
   "dependencies": {
     "@libsql/client": "^0.9.0",
     "@t3-oss/env-nextjs": "^0.10.1",
     "@uploadthing/react": "^7.1.5",
+    "convex": "^1.25.0",
     "drizzle-orm": "^0.33.0",
     "geist": "^1.3.0",
     "next": "^15.0.1",
