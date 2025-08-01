@@ -8,5 +8,5 @@ import { fetchQuery } from "convex/nextjs";
 export async function GET(request: Request) {
   const img = await generateCanvasImage();
   const imageURL = "data:image/png;base64," + img.toString("base64");
-  return new Response(imageURL);
+  return new Response(imageURL, { headers: { "Content-Type": "image/png" } });
 }
