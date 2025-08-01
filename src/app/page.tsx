@@ -74,7 +74,7 @@ export default async function HomePage() {
   const gridSize = 100;
   const pixelSize = 10;
   const modMode = await fetchQuery(api.mod.get);
-  if (modMode && modMode === true) {
+  if (modMode && modMode !== true) {
     return (
       <Suspense fallback={<div>Loading...</div>}>
         <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />

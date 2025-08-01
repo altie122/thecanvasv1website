@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   }
   const modMode = await fetchQuery(api.mod.get);
   const unixTime = Math.floor(Date.now() / 1000);
-  if (modMode && modMode !== true) {
+  if (modMode && modMode === true) {
     const img = await generateCanvasImage();
     const fimeName = `snapshot_${unixTime}.png`;
     const URL = await uploadThing({ name: fimeName, data: img.buffer });
