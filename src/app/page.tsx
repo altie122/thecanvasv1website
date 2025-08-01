@@ -74,19 +74,20 @@ export default async function HomePage() {
   const gridSize = 100;
   const pixelSize = 10;
   const modMode = await fetchQuery(api.mod.get);
-  if (modMode && modMode != true) {
-    return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />
-      </Suspense>
-    );
-  } else {
+
+  if (modMode) { // If modMode is truthy (e.g., true, or any other value indicating outage)
     return (
       <div className="w-dvw h-dvh flex items-center justify-center">
         <h1 className="text-9xl font-black">
           TheCanvas is currently in a Moderation Outage, check back soon!
         </h1>
       </div>
+    );
+  } else { // If modMode is falsy (e.g., false, null, undefined)
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />
+      </Suspense>
     );
   }
 }
