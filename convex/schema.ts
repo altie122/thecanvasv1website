@@ -7,4 +7,7 @@ export default defineSchema({
     y: v.number(),
     color: v.string(),
   }).index("by_coordinates", ["x", "y"]).index("by_row", ["x"]),
+  InModerationMode: defineTable({
+    value: v.boolean()
+  })
 });

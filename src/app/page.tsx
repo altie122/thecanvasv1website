@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Widgets } from "@/components/widgets";
 import { generateCanvasImage } from "@/lib";
 import { headers } from "next/headers";
 import { Suspense } from "react";
+import { api } from "convex@/_generated/api";
+import { fetchQuery } from "convex/nextjs";
 
 // Mark the page as dynamic to ensure SSR on every request
 export const dynamic = "force-dynamic";
@@ -69,9 +73,16 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const gridSize = 100;
   const pixelSize = 10;
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />
-    </Suspense>
-  );
+  const modMode = await fetchQuery(api.mod.get);
+  if (modMode && modMode === true) {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />
+      </Suspense>
+    );
+  } else {
+    return (
+      <h1 className=" font-black text-9xl">TheCanvas is currently in a Moderation Outage, check back soon!</h1>
+    )
+  }
 }
