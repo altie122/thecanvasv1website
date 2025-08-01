@@ -82,7 +82,11 @@ export default async function HomePage() {
     );
   } else {
     return (
-      <h1 className=" font-black text-9xl">TheCanvas is currently in a Moderation Outage, check back soon!</h1>
-    )
+      <div className="w-dvw h-dvh flex items-center justify-center">
+        <h1 className="text-9xl font-black">
+          TheCanvas is currently in a Moderation Outage, check back soon!
+        </h1>
+      </div>
+    );
   }
 }
