@@ -5,8 +5,19 @@
 "use client";
 import { api } from "convex@/_generated/api";
 import { useQuery } from "convex/react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
-export default function Grid({ gridSize, pixelSize }: { gridSize: number; pixelSize: number }) {
+export default function Grid({
+  gridSize,
+  pixelSize,
+}: {
+  gridSize: number;
+  pixelSize: number;
+}) {
   // Ensure pixels is never undefined by providing a default empty array
   const pixels = useQuery(api.pixels.GetAllPixels) ?? [];
 
@@ -24,17 +35,23 @@ export default function Grid({ gridSize, pixelSize }: { gridSize: number; pixelS
       const color = pixelMap.get(coordKey) ?? "#FFFFFF"; // Default to white if no color is found
 
       gridCells.push(
-        <div
-          key={`${x}-${y}`} // Unique key for each cell
-          style={{
-            width: pixelSize,
-            height: pixelSize,
-            backgroundColor: color,
-            // Add a border for visualization if needed, remove for a solid look
-            // border: "1px solid #eee",
-          }}
-          className="flex items-center justify-center" // Basic centering, adjust as needed
-        />
+        <Tooltip key={`${x}-${y}`}>
+          <TooltipTrigger>
+            <div
+              style={{
+                width: pixelSize,
+                height: pixelSize,
+                backgroundColor: color,
+                // Add a border for visualization if needed, remove for a solid look
+                // border: "1px solid #eee",
+              }}
+              className="flex items-center justify-center" // Basic centering, adjust as needed
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{`${x}-${y}`}</p>
+          </TooltipContent>
+        </Tooltip>,
       );
     }
   }
