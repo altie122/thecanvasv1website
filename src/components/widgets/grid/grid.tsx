@@ -50,6 +50,7 @@ export default function Grid({
           </TooltipTrigger>
           <TooltipContent>
             <p>{`${x}-${y}`}</p>
+            <p>{color}</p>
           </TooltipContent>
         </Tooltip>,
       );
