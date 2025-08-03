@@ -16,7 +16,7 @@ export async function GET(request: Request) {
   if (!modMode) {
     const img = await generateCanvasImage();
     const fileName = `snapshot_${unixTime}.png`;
-    const URL = await uploadThing({ name: fileName, data: img.buffer });
+    const URL = await uploadThing({ name: fileName, data: img.buffer as ArrayBuffer });
     await fetch(
       env.DISCORD_WEBHOOK,
       {
