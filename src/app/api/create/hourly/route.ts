@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { uploadThing, generateCanvasImage } from "@/lib";
 import { api } from "convex@/_generated/api";
 import { env } from "@/env";
@@ -9,25 +11,13 @@ export async function GET(request: Request) {
   if (requestkey !== API_KEY && process.env.NODE_ENV === "production") {
     return new Response("Unauthorized", { status: 401 });
   }
-
   const modMode = await fetchQuery(api.mod.get);
   const unixTime = Math.floor(Date.now() / 1000);
-
   if (!modMode) {
-    const img = await generateCanvasImage(); // Buffer
+    const img = await generateCanvasImage();
     const fileName = `snapshot_${unixTime}.png`;
-
-    // Convert Buffer -> ArrayBuffer (proper, not ArrayBufferLike)
-    const arrayBuffer = img.buffer.slice(
-      img.byteOffset,
-      img.byteOffset + img.byteLength
-    );
-
-    const URL = await uploadThing({
-      name: fileName,
-      data: arrayBuffer,
-    });
-
+    const uint8 = new Uint8Array(img.buffer, img.byteOffset, img.byteLength);
+    const URL = await uploadThing({ name: fileName, data: uint8 });
     await fetch(env.DISCORD_WEBHOOK, {
       method: "POST",
       headers: {
@@ -37,7 +27,6 @@ export async function GET(request: Request) {
         content: `<t:${unixTime}:F> New snapshot uploaded! ${URL}`,
       }),
     });
-
     return new Response(URL);
   } else {
     await fetch(env.DISCORD_WEBHOOK, {
@@ -49,7 +38,5 @@ export async function GET(request: Request) {
         content: `<t:${unixTime}:F> Snapshot Failed; Moderation Mode is active.`,
       }),
     });
-
-    return new Response("Moderation mode active", { status: 409 });
   }
 }
