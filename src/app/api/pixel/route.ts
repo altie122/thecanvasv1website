@@ -8,12 +8,14 @@ type expectedData = {
   x: number;
   y: number;
   color: string;
+  userID?: number;
 }
 
 type expectedDataRaw = {
   x: string;
   y: string;
   hex: string;
+  userID?: string;
 }
 
 export async function POST(request: Request) {
@@ -23,11 +25,12 @@ export async function POST(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
   const data: expectedDataRaw = await request.json();
-  const { x, y, hex } = data;
+  const { x, y, hex, userID } = data;
   const FormattedData: expectedData = {
     x: parseInt(x),
     y: parseInt(y),
     color: `#${hex}`,
+    userID: userID ? parseInt(userID) : undefined,
   };
   const response = await fetchMutation(api.pixels.UpdatePixel, FormattedData);
   if (response === "Success") {

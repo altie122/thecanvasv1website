@@ -15,33 +15,28 @@ export async function GET(request: Request) {
   const unixTime = Math.floor(Date.now() / 1000);
   if (!modMode) {
     const img = await generateCanvasImage();
-    const fimeName = `snapshot_${unixTime}.png`;
-    const URL = await uploadThing({ name: fimeName, data: img.buffer });
-    await fetch(
-      env.DISCORD_WEBHOOK,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: `<t:${unixTime}:F> New snapshot uploaded! ${URL}`,
-        }),
-      }
-    )
+    const fileName = `snapshot_${unixTime}.png`;
+    const blob = new Blob([img], { type: "image/png" });
+    const URL = await uploadThing({ name: fileName, data: blob.arrayBuffer() });
+    await fetch(env.DISCORD_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: `<t:${unixTime}:F> New snapshot uploaded! ${URL}`,
+      }),
+    });
     return new Response(URL);
   } else {
-    await fetch(
-      env.DISCORD_WEBHOOK,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: `<t:${unixTime}:F> Snapshot Failed; Moderation Mode is active.`,
-        }),
-      }
-    )
+    await fetch(env.DISCORD_WEBHOOK, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: `<t:${unixTime}:F> Snapshot Failed; Moderation Mode is active.`,
+      }),
+    });
   }
 }
