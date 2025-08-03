@@ -16,27 +16,32 @@ export async function GET(request: Request) {
   if (!modMode) {
     const img = await generateCanvasImage();
     const fileName = `snapshot_${unixTime}.png`;
-    const uint8 = new Uint8Array(img.buffer, img.byteOffset, img.byteLength);
-    const URL = await uploadThing({ name: fileName, data: uint8 });
-    await fetch(env.DISCORD_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: `<t:${unixTime}:F> New snapshot uploaded! ${URL}`,
-      }),
-    });
+    const URL = await uploadThing({ name: fileName, data: img.buffer });
+    await fetch(
+      env.DISCORD_WEBHOOK,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: `<t:${unixTime}:F> New snapshot uploaded! ${URL}`,
+        }),
+      }
+    )
     return new Response(URL);
   } else {
-    await fetch(env.DISCORD_WEBHOOK, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: `<t:${unixTime}:F> Snapshot Failed; Moderation Mode is active.`,
-      }),
-    });
+    await fetch(
+      env.DISCORD_WEBHOOK,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          content: `<t:${unixTime}:F> Snapshot Failed; Moderation Mode is active.`,
+        }),
+      }
+    )
   }
 }

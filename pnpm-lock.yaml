@@ -21,7 +21,7 @@ importers:
         specifier: ^0.10.1
         version: 0.10.1(typescript@5.9.2)(zod@3.25.76)
       '@uploadthing/react':
-        specifier: ^7.3.2
+        specifier: ^7.1.5
         version: 7.3.2(next@15.4.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react@19.1.1)(uploadthing@7.7.3(next@15.4.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(tailwindcss@4.1.11))
       class-variance-authority:
         specifier: ^0.7.1
@@ -63,7 +63,7 @@ importers:
         specifier: ^3.3.1
         version: 3.3.1
       uploadthing:
-        specifier: ^7.7.3
+        specifier: ^7.4.4
         version: 7.7.3(next@15.4.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(tailwindcss@4.1.11)
       zod:
         specifier: ^3.25.76
