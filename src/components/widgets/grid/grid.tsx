@@ -1,174 +1,193 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 "use client";
+
+import React, { useRef, useEffect, useMemo, useCallback } from "react";
+import { MapContainer, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
 import { api } from "convex@/_generated/api";
 import { useQuery } from "convex/react";
-import React, { useRef, useEffect, useState, useMemo, useCallback } from "react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"; // Your Shadcn UI tooltip
 
-// Define the shape of a pixel from your Convex query
+import { CanvasGridLayer } from "./canvas-grid-layer";
+
 interface Pixel {
   x: number;
   y: number;
   color: string;
-  // Add other properties if they exist, like _id, _creationTime
+  userID?: number;
 }
 
-export default function Grid({
+// *** SIMPLEST CRS: L.CRS.Simple without any custom resolutions or transformations ***
+// This uses Leaflet's default: (0,0) is top-left, Y increases downwards.
+// Zoom levels Z: 1 map unit = 2^Z screen pixels.
+const defaultSimpleCRS = L.CRS.Simple;
+
+export default function LeafletGrid({
   gridSize,
-  pixelSize,
+  pixelSize, // This prop controls initial zoom for visual density
 }: {
   gridSize: number;
   pixelSize: number;
 }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const pixels = useQuery(api.pixels.GetAllPixels) as Pixel[] | undefined ?? [];
+  const pixels =
+    (useQuery(api.pixels.GetAllPixels) as Pixel[] | undefined) ?? [];
 
-  // State for controlling the custom tooltip
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipContent, setTooltipContent] = useState<string | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
-
-  // Memoize pixelMap for quick lookups
   const pixelMap = useMemo(() => {
-    const map = new Map<string, string>();
+    const map = new Map<string, { color: string; userID?: number }>();
     pixels.forEach((pixel) => {
-      map.set(`${pixel.x},${pixel.y}`, pixel.color);
+      map.set(`${pixel.x},${pixel.y}`, {
+        color: pixel.color,
+        userID: pixel.userID,
+      });
     });
     return map;
   }, [pixels]);
 
-  // Effect to draw pixels on the canvas whenever `pixels` or canvas dimensions change
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // Map bounds: [[minY, minX], [maxY, maxX]] in conceptual map units.
+  // For a grid from (1,1) top-left to (gridSize, gridSize) bottom-right:
+  const mapBounds: L.LatLngBoundsExpression = [
+    [0, 0],
+    [gridSize, gridSize],
+  ];
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+  const TooltipHandler = React.memo(function TooltipHandler({
+    pixelMap,
+    gridSize,
+  }: {
+    pixelMap: Map<string, { color: string; userID?: number }>;
+    gridSize: number;
+  }) {
+    const map = useMap();
+    const activeMapTooltipRef = useRef<L.Tooltip | null>(null);
 
-    // Set canvas dimensions
-    canvas.width = gridSize * pixelSize;
-    canvas.height = gridSize * pixelSize;
+    const handleMouseMove = useCallback(
+      (e: L.LeafletMouseEvent) => {
+        // e.latlng contains map coordinates (Y, X) for the defaultSimpleCRS (Y-down).
+        // These are already in our conceptual map units.
+        const currentMapX = e.latlng.lng;
+        const currentMapY = e.latlng.lat;
 
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Convert map units to 0-indexed conceptual grid coordinates
+        const cellX_0_indexed = Math.floor(currentMapX);
+        const cellY_0_indexed = Math.floor(currentMapY);
 
-    // Draw all pixels
-    for (let y = 0; y < gridSize; y++) {
-      for (let x = 0; x < gridSize; x++) {
-        // Correctly calculate 1-indexed coordinates for map lookup
-        const coordKey = `${x + 1},${y + 1}`;
-        const color = pixelMap.get(coordKey) ?? "#FFFFFF";
+        // Convert to 1-indexed for pixelMap lookup.
+        // Assuming pixelMap uses Y=1 for the TOP row and Y=gridSize for the BOTTOM row.
+        // Since Leaflet's default CRS is Y-down, and `pixelMap` is Y-down,
+        // this is a direct translation. NO Y-FLIP NEEDED HERE.
+        const pixelMapX = cellX_0_indexed + 1;
+        const pixelMapY = cellY_0_indexed * -1;
 
-        ctx.fillStyle = color;
-        ctx.fillRect(x * pixelSize, y * pixelSize, pixelSize, pixelSize);
+        if (
+          pixelMapX >= 1 &&
+          pixelMapX <= gridSize &&
+          pixelMapY >= 1 &&
+          pixelMapY <= gridSize
+        ) {
+          const coordKey = `${pixelMapX},${pixelMapY}`;
+          const entry = pixelMap.get(coordKey);
+          const color = entry?.color ?? "#FFFFFF";
+          const userID = entry?.userID;
+
+          const tooltipContent = `X: ${pixelMapX}, Y: ${pixelMapY}<br/>Color: ${color}${
+            userID != null ? `<br/>UserID: ${userID}` : ""
+          }`;
+
+          if (!activeMapTooltipRef.current) {
+            activeMapTooltipRef.current = L.tooltip({
+              direction: "top", // Default to top
+              permanent: false,
+              interactive: false,
+              offset: L.point(0, -10), // Pixels offset for visual appearance
+              className: "custom-pixel-tooltip",
+            })
+              .setLatLng(e.latlng)
+              .setContent(tooltipContent)
+              .addTo(map);
+          } else {
+            activeMapTooltipRef.current
+              .setLatLng(e.latlng)
+              .setContent(tooltipContent);
+          }
+        } else {
+          if (activeMapTooltipRef.current) {
+            map.removeLayer(activeMapTooltipRef.current);
+            activeMapTooltipRef.current = null;
+          }
+        }
+      },
+      [gridSize, pixelMap, map],
+    );
+
+    const handleMouseOut = useCallback(() => {
+      if (activeMapTooltipRef.current) {
+        map.removeLayer(activeMapTooltipRef.current);
+        activeMapTooltipRef.current = null;
       }
-    }
-  }, [pixels, gridSize, pixelSize, pixelMap]);
+    }, [map]);
 
-  // Handle mouse move to show tooltips
-  const handleMouseMove = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    useEffect(() => {
+      map.on("mousemove", handleMouseMove);
+      map.on("mouseout", handleMouseOut);
 
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width; // Account for CSS scaling
-    const scaleY = canvas.height / rect.height;
+      return () => {
+        map.off("mousemove", handleMouseMove);
+        map.off("mouseout", handleMouseOut);
+        if (activeMapTooltipRef.current) {
+          map.removeLayer(activeMapTooltipRef.current);
+          activeMapTooltipRef.current = null;
+        }
+      };
+    }, [map, handleMouseMove, handleMouseOut]);
 
-    const mouseX = (event.clientX - rect.left) * scaleX;
-    const mouseY = (event.clientY - rect.top) * scaleY;
+    return null;
+  });
 
-    // Calculate which grid cell the mouse is over (0-indexed)
-    const cellX = Math.floor(mouseX / pixelSize);
-    const cellY = Math.floor(mouseY / pixelSize);
-
-    // Check if within bounds
-    if (cellX >= 0 && cellX < gridSize && cellY >= 0 && cellY < gridSize) {
-      // Get 1-indexed coordinates for data lookup
-      const actualX = cellX + 1;
-      const actualY = cellY + 1;
-      const coordKey = `${actualX},${actualY}`;
-      const color = pixelMap.get(coordKey) ?? "#FFFFFF";
-
-      setTooltipContent(`X: ${actualX}, Y: ${actualY}, Color: ${color}`);
-      setTooltipPosition({
-        x: event.clientX, // Use clientX/Y for positioning the tooltip relative to viewport
-        y: event.clientY,
-      });
-      setTooltipVisible(true);
-    } else {
-      setTooltipVisible(false);
-    }
-  }, [gridSize, pixelSize, pixelMap]); // Dependencies for useCallback
-
-  const handleMouseOut = useCallback(() => {
-    setTooltipVisible(false);
-  }, []);
+  // Calculate an appropriate initial zoom level based on desired pixelSize.
+  // With L.CRS.Simple, at zoom Z, 1 map unit = 2^Z screen pixels.
+  // If you want each conceptual pixel (1 map unit) to initially show as `pixelSize` screen pixels,
+  // then the required initial zoom level Z is such that `2^Z = pixelSize`.
+  const initialZoom = Math.log2(pixelSize);
 
   return (
     <div
       style={{
-        position: "relative", // Needed for absolute positioning of the custom tooltip
-        width: gridSize * pixelSize,
-        height: gridSize * pixelSize,
-        // Optional: Border around the entire grid
-        // border: "1px solid #ccc",
+        width: "100dvw", // Use dvw/dvh for dynamic viewport units
+        height: "100dvh",
+        margin: "0", // Remove default margins
       }}
     >
-      <canvas
-        ref={canvasRef}
-        onMouseMove={handleMouseMove}
-        onMouseOut={handleMouseOut}
-        className="block" // Ensures no extra margin/padding from inline-block default
-      />
-
-      {/* Custom Tooltip using Shadcn's Tooltip components directly */}
-      {tooltipVisible && tooltipPosition && (
-        <Tooltip open={tooltipVisible}>
-          <TooltipTrigger asChild>
-            {/* An invisible div positioned where the mouse is.
-                This is a workaround to use Shadcn's TooltipTrigger effectively
-                without having a real element at the pixel's location.
-                Alternatively, you might need to build your own custom tooltip
-                component from scratch if this feels too hacky or doesn't behave
-                as expected with complex tooltips.
-            */}
-            <div
-              style={{
-                position: "fixed", // Position relative to the viewport
-                left: tooltipPosition.x,
-                top: tooltipPosition.y,
-                // Make it tiny and invisible
-                width: 1,
-                height: 1,
-                pointerEvents: "none", // Ensure it doesn't block mouse events on canvas
-                transform: "translate(-50%, -100%)", // Adjust to position tooltip above cursor
-              }}
-            />
-          </TooltipTrigger>
-          <TooltipContent
-            side="top"
-            align="center"
-            // Override default content styling to appear correctly
-            style={{
-                position: "fixed",
-                left: tooltipPosition.x,
-                top: tooltipPosition.y,
-                transform: "translate(-50%, calc(-100% - 10px))", // Adjust to move above cursor with padding
-                pointerEvents: "none", // Tooltip content should not capture mouse events
-                zIndex: 1000, // Ensure it's on top
-            }}
-          >
-            <p>{tooltipContent}</p>
-          </TooltipContent>
-        </Tooltip>
-      )}
+      <MapContainer
+        // Center of the map in conceptual map units (Y, X)
+        center={[-gridSize / 2, gridSize / 2]}
+        // Initial zoom: Set to calculated value.
+        zoom={initialZoom}
+        // Use Leaflet's default min/max zoom, or set specific values
+        // that are *within* Leaflet's reasonable range for L.CRS.Simple.
+        // Allowing negative zooms is fine.
+        minZoom={-5} // Allows significant zoom out (e.g. 1/32 screen pixel per map unit)
+        maxZoom={10} // Allows significant zoom in (e.g. 1024 screen pixels per map unit)
+        zoomSnap={1} // Snap to integer zoom levels for cleaner pixel rendering (optional, can be 0.5 too)
+        crs={defaultSimpleCRS} // *** Use default L.CRS.Simple ***
+        bounds={mapBounds}
+        maxBoundsViscosity={1.0}
+        style={{ width: "100%", height: "100%", backgroundColor: "#333" }}
+        doubleClickZoom={false}
+        attributionControl={false}
+      >
+        {/* Pass `pixelSize` as 1 to CanvasGridLayer, as it draws 1 map unit = 1 pixel on tile. */}
+        <CanvasGridLayer
+          pixelMap={pixelMap}
+          pixelSize={1}
+          gridSize={gridSize}
+        />
+        <TooltipHandler pixelMap={pixelMap} gridSize={gridSize} />
+      </MapContainer>
     </div>
   );
 }

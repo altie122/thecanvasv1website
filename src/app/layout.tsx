@@ -17,9 +17,9 @@ export default function RootLayout({
     <html lang="en" className={`${GeistSans.variable} bg-white text-black`}>
       <body>
         <ConvexClientProvider>
-        <header className="p-4 sticky top-0 bg-transparent">
+        {/* <header className="p-4 sticky top-0 bg-transparent">
           <a href="https://www.roblox.com/games/91945887967211/the-canvas" className="decoration-wavy">The Canvas</a> by <a href="https://altie122.xyz/" className="decoration-wavy">DragonForgeRGS</a>
-        </header>
+        </header> */}
         {children}
         </ConvexClientProvider>
       </body>

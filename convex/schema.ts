@@ -6,6 +6,7 @@ export default defineSchema({
     x: v.number(),
     y: v.number(),
     color: v.string(),
+    userID: v.optional(v.number()),
   }).index("by_coordinates", ["x", "y"]).index("by_row", ["x"]),
   InModerationMode: defineTable({
     value: v.boolean()
