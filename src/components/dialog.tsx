@@ -12,7 +12,7 @@ import { Info } from "lucide-react";
 
 export function DialogOverlay() {
   return (
-    <div className="absolute right-0 bottom-0 z-[9999] m-2">
+    <div className="absolute right-0 bottom-0 z-[49] m-2">
       <Dialog>
         <DialogTrigger asChild>
           <Button variant={"default"}>
