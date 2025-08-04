@@ -93,7 +93,10 @@ export function DialogOverlay() {
                 </a>
               </li>
               <li>
-                <a href="https://github.com/tailwindlabs/tailwindcss">
+                <a
+                  href="https://github.com/tailwindlabs/tailwindcss"
+                  className="text-red-600 decoration-wavy"
+                >
                   Tailwind CSS
                 </a>{" "}
                 {`"Rapidly build modern websites without ever leaving your HTML."`}{" "}
@@ -106,7 +109,12 @@ export function DialogOverlay() {
                 </a>
               </li>
               <li>
-                <a href="https://github.com/shadcn-ui/ui">Shadcn UI</a>{" "}
+                <a
+                  href="https://github.com/shadcn-ui/ui"
+                  className="text-red-600 decoration-wavy"
+                >
+                  Shadcn UI
+                </a>{" "}
                 {`"The Foundation for your Design System"`} by{" "}
                 <a
                   href="https://github.com/shadcn"
