@@ -15,7 +15,7 @@ export function DialogOverlay() {
   const searchParams = useSearchParams();
   return (
     <div className="absolute right-0 bottom-0 z-[49] m-2">
-      <Dialog open={searchParams.get("dialog") === "true"}>
+      <Dialog defaultOpen={searchParams.get("dialog") === "true"}>
         <DialogTrigger asChild>
           <Button variant={"default"}>
             <Info className="h-12 w-12" />
