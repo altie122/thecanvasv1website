@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 import { Suspense } from "react";
 import { api } from "convex@/_generated/api";
 import { fetchQuery } from "convex/nextjs";
+import { DialogOverlay } from "@/components/dialog";
 
 // Mark the page as dynamic to ensure SSR on every request
 export const dynamic = "force-dynamic";
@@ -75,19 +76,24 @@ export default async function HomePage() {
   const pixelSize = 10;
   const modMode = await fetchQuery(api.mod.get);
 
-  if (modMode) { // If modMode is truthy (e.g., true, or any other value indicating outage)
+  if (modMode) {
+    // If modMode is truthy (e.g., true, or any other value indicating outage)
     return (
-      <div className="w-dvw h-dvh flex items-center justify-center">
+      <div className="flex h-dvh w-dvw items-center justify-center">
         <h1 className="text-9xl font-black">
           TheCanvas is currently in a Moderation Outage, check back soon!
         </h1>
       </div>
     );
-  } else { // If modMode is falsy (e.g., false, null, undefined)
+  } else {
+    // If modMode is falsy (e.g., false, null, undefined)
     return (
-      <Suspense fallback={<div>Loading...</div>}>
-        <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />
-      </Suspense>
+      <>
+        <DialogOverlay />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Widgets.Grid.default gridSize={gridSize} pixelSize={pixelSize} />
+        </Suspense>
+      </>
     );
   }
 }

@@ -22,6 +22,8 @@
   },
   "dependencies": {
     "@libsql/client": "^0.9.0",
+    "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@react-leaflet/core": "^3.0.0",
     "@t3-oss/env-nextjs": "^0.10.1",

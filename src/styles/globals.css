@@ -156,3 +156,15 @@
 .leaflet-tile {
   visibility: visible !important;
 }
+
+.leaflet-map-pane {
+  z-index: 1 !important;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.leaflet-container {
+    z-index: 0;
+    transform: translateZ(0);
+    will-change: transform;
+}
