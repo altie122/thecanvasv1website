@@ -17,6 +17,7 @@ export function DialogOverlay() {
         <DialogTrigger asChild>
           <Button variant={"default"}>
             <Info className="h-12 w-12" />
+            <span className="sr-only">Info</span>
           </Button>
         </DialogTrigger>
         <DialogContent>
