@@ -20,7 +20,7 @@ export const GetRowPixels = query({
 });
 
 export const UpdatePixel = mutation({
-  args: { x: v.number(), y: v.number(), color: v.string(), userID: v.number() },
+  args: { x: v.number(), y: v.number(), color: v.string(), userID: v.optional(v.number()) },
   handler: async (ctx, args) => {
     const pixel = await ctx.db
       .query("Pixels")
