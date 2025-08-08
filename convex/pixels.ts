@@ -20,33 +20,61 @@ export const GetRowPixels = query({
 });
 
 export const UpdatePixel = mutation({
-  args: { x: v.number(), y: v.number(), color: v.string() },
+  args: { x: v.number(), y: v.number(), color: v.string(), userID: v.number() },
   handler: async (ctx, args) => {
     const pixel = await ctx.db
       .query("Pixels")
       .withIndex("by_coordinates", (q) => q.eq("x", args.x).eq("y", args.y))
       .first();
     if (pixel) {
-      try {
-        await ctx.db.patch(pixel._id, {
-          x: args.x,
-          y: args.y,
-          color: args.color,
-        });
-      } catch (error) {
-        return error;
+      if (args.userID) {
+        const sanitizedUID = parseInt(args.userID.toFixed(0));
+        try {
+          await ctx.db.patch(pixel._id, {
+            x: args.x,
+            y: args.y,
+            color: args.color,
+            userID: sanitizedUID,
+          });
+        } catch (error) {
+          return error;
+        }
+      } else {
+        try {
+          await ctx.db.patch(pixel._id, {
+            x: args.x,
+            y: args.y,
+            color: args.color,
+          });
+        } catch (error) {
+          return error;
+        }
       }
     } else {
-      try {
-        await ctx.db.insert("Pixels", {
-          x: args.x,
-          y: args.y,
-          color: args.color,
-        });
-      } catch (error) {
-        return error;
+      if (args.userID) {
+        const sanitizedUID = parseInt(args.userID.toFixed(0));
+        try {
+          await ctx.db.insert("Pixels", {
+            x: args.x,
+            y: args.y,
+            color: args.color,
+            userID: sanitizedUID,
+          });
+        } catch (error) {
+          return error;
+        }
+      } else {
+        try {
+          await ctx.db.insert("Pixels", {
+            x: args.x,
+            y: args.y,
+            color: args.color,
+          });
+        } catch (error) {
+          return error;
+        }
       }
-    };
+    }
     return "Success";
   },
 });
