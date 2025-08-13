@@ -14,7 +14,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable} bg-white text-black`}>
+    <html lang="en" className={`${GeistSans.variable} dark`}>
       <body>
         <ConvexClientProvider>
         {/* <header className="p-4 sticky top-0 bg-transparent">
