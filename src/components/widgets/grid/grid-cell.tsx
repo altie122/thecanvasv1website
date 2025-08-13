@@ -5,12 +5,15 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAction } from "convex/react";
+import { api } from "convex@/_generated/api";
 
 interface GridCellProps {
   x: number;
   y: number;
   pixelSize: number;
   color: string;
+  userId?: number;
 }
 
 const GridCell = React.memo(function GridCell({
@@ -18,6 +21,7 @@ const GridCell = React.memo(function GridCell({
   y,
   pixelSize,
   color,
+  userId,
 }: GridCellProps) {
   const [showTooltip, setShowTooltip] = useState(false);
 
@@ -43,6 +47,9 @@ const GridCell = React.memo(function GridCell({
       <TooltipContent>
         <p>{`${x}-${y}`}</p>
         <p>{color}</p>
+        {
+          userId && <p>{userId}</p>
+        }
       </TooltipContent>
     </Tooltip>
   );

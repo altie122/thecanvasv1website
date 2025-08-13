@@ -41,6 +41,7 @@ export default function Grid({
             y={y + 1} // Pass 1-indexed if your tooltips need it
             pixelSize={pixelSize}
             color={color}
+            userId={pixelMap.get(coordKey)?.userID}
           />,
         );
       }

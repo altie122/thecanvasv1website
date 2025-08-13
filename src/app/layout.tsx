@@ -6,8 +6,7 @@ import { type Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "The Canvas",
-  description: "A Roblox game where you can draw on the screen for all to see! Inspired by r/place. Made by DragonForgeRGS/Altie122.",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  description: "A Roblox game where you can draw on the screen for all to see! Inspired by r/place. Made by Altie122 Studios - RGS.",
 };
 
 export default function RootLayout({

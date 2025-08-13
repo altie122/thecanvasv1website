@@ -132,7 +132,7 @@ export function DialogOverlay() {
                   Vercel
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a
                   href="https://github.com/Leaflet/Leaflet"
                   className="text-red-600 decoration-wavy"
@@ -161,7 +161,7 @@ export function DialogOverlay() {
                 >
                   Paul Le Cam
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a
                   href="https://github.com/pingdotgg/uploadthing"

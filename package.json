@@ -21,6 +21,7 @@
     "convex": "convex"
   },
   "dependencies": {
+    "@convex-dev/action-cache": "^0.2.11",
     "@libsql/client": "^0.9.0",
     "@radix-ui/react-dialog": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.3",
