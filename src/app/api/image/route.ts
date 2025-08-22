@@ -7,7 +7,7 @@ export async function GET(_request: Request) {
   try {
     const imgBuffer = await generateCanvasImage();
     // Return the image buffer directly with PNG content type
-    return new Response(imgBuffer, {
+    return new Response(new Uint8Array(imgBuffer), {
       headers: {
         "Content-Type": "image/png",
         "Cache-Control": "no-cache, no-store, must-revalidate",
