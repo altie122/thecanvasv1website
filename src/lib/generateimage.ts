@@ -7,8 +7,8 @@ import { env } from "@/env";
 
 const UNIVERSE_ID = env.ROBLOX_UNIVERSE_ID;
 const API_KEY = env.ROBLOX_API_KEY;
-const GRID_SIZE = 120;
-const SCALE_FACTOR = 10; // Each pixel will be 10x10 in the output
+const GRID_SIZE = 120; // # of pixels in the grid, this should match the grid size in Roblox
+const SCALE_FACTOR = 10; // Size of a given pixel in the canvas
 const OUTPUT_SIZE = GRID_SIZE * SCALE_FACTOR;
 
 interface ColorData {
@@ -50,8 +50,7 @@ export async function generateCanvasImage(): Promise<Buffer> {
     // Fill in the pixels from the data
     Object.entries(pixelData).forEach(([coordString, colorData]) => {
       const coords = JSON.parse(coordString);
-      // Adjust x and y to be 0-indexed directly from the 1-indexed Roblox coordinates
-      // Assuming coords[0] is the x-coordinate and coords[1] is the y-coordinate from Roblox
+      
       const x = coords[0] - 1; // Convert 1-based x to 0-based x
       const y = coords[1] - 1; // Convert 1-based y to 0-based y
 
@@ -88,10 +87,6 @@ export async function generateCanvasImage(): Promise<Buffer> {
         compressionLevel: 9, // Maximum compression
       })
       .toBuffer();
-
-    console.log(
-      `High-res image buffer created successfully! Output size: ${OUTPUT_SIZE}x${OUTPUT_SIZE}`
-    );
     return buffer;
   } catch (error) {
     console.error("Error generating canvas image:", error);

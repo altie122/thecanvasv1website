@@ -1,8 +1,8 @@
 "use client";
 import { api } from "convex@/_generated/api";
 import { useQuery } from "convex/react";
-import GridCell from "./grid-cell"; // Import the memoized component
-import React, { useMemo } from "react"; // Import useMemo
+import GridCell from "./grid-cell";
+import React, { useMemo } from "react";
 
 export default function Grid({
   gridSize,
@@ -11,7 +11,6 @@ export default function Grid({
   gridSize: number;
   pixelSize: number;
 }) {
-  // Allow 'pixels' to be undefined when loading
   const pixels = useQuery(api.pixels.GetAllPixels);
 
   // Use useMemo to create the pixelMap only when 'pixels' changes
@@ -36,9 +35,9 @@ export default function Grid({
 
         cells.push(
           <GridCell
-            key={`${x}-${y}`} // Key is still important here!
-            x={x + 1} // Pass 1-indexed if your tooltips need it
-            y={y + 1} // Pass 1-indexed if your tooltips need it
+            key={`${x}-${y}`}
+            x={x + 1}
+            y={y + 1}
             pixelSize={pixelSize}
             color={color}
             userId={pixelMap.get(coordKey)?.userID}

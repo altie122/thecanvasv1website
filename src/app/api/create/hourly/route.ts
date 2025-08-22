@@ -5,14 +5,17 @@ import { api } from "convex@/_generated/api";
 import { env } from "@/env";
 import { fetchQuery } from "convex/nextjs";
 
+// Handle hourly snapshot requests
 export async function GET(request: Request) {
-  const API_KEY = process.env.CREATE_API_KEY;
+  const API_KEY = env.CREATE_API_KEY;
   const requestkey = request.headers.get("x-api-key");
-  if (requestkey !== API_KEY && process.env.NODE_ENV === "production") {
+  // Check if the request key matches the API key and if the environment is production
+  if (requestkey !== API_KEY && env.NODE_ENV === "production") {
     return new Response("Unauthorized", { status: 401 });
   }
-  const modMode = await fetchQuery(api.mod.get);
-  const unixTime = Math.floor(Date.now() / 1000);
+  const modMode = await fetchQuery(api.mod.get); // Get the current mod mode status
+  const unixTime = Math.floor(Date.now() / 1000); // Get the current Unix timestamp
+  // If the mod mode is not active, generate a canvas image and upload it to UploadThing and send a snapshot message to Discord
   if (!modMode) {
     const img = await generateCanvasImage();
     const fileName = `snapshot_${unixTime}.png`;
@@ -30,7 +33,7 @@ export async function GET(request: Request) {
       }
     )
     return new Response(URL);
-  } else {
+  } else { // If the mod mode is active, send an error message to Discord
     await fetch(
       env.DISCORD_WEBHOOK,
       {

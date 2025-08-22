@@ -5,8 +5,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useAction } from "convex/react";
-import { api } from "convex@/_generated/api";
 
 interface GridCellProps {
   x: number;
@@ -25,6 +23,8 @@ const GridCell = React.memo(function GridCell({
 }: GridCellProps) {
   const [showTooltip, setShowTooltip] = useState(false);
 
+  // Main cell div
+
   const cellDiv = (
     <div
       style={{
@@ -37,9 +37,13 @@ const GridCell = React.memo(function GridCell({
     />
   );
 
+  // If the tooltip is not needed, we can return the cell div directly making the component more efficient
+
   if (!showTooltip) {
     return cellDiv;
   }
+
+  // If the tooltip is needed, we can render it conditionally
 
   return (
     <Tooltip key={`${x}-${y}`}>

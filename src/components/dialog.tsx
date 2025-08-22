@@ -25,19 +25,14 @@ export function DialogOverlay() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              <a
-                href="https://www.roblox.com/games/91945887967211/the-canvas"
-                className="text-red-600 decoration-wavy"
-              >
-                The Canvas
-              </a>{" "}
-              by{" "}
+              The Canvas by{" "}
               <a
                 href="https://altie122.xyz/"
                 className="text-red-600 decoration-wavy"
               >
-                DragonForgeRGS
-              </a>
+                Altie122 Studios RGS
+              </a>{" "}
+              {/* Please keep some credits to Altie122 Studios in this dialog, as per the license it is not required but it is appreciated */}
             </DialogTitle>
             <DialogDescription>
               Open Source Software used for this project below.

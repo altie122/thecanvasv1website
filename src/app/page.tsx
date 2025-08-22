@@ -11,6 +11,7 @@ import { DialogOverlay } from "@/components/dialog";
 // Mark the page as dynamic to ensure SSR on every request
 export const dynamic = "force-dynamic";
 
+// Metadata for the page
 export async function generateMetadata() {
   const headersList = await headers();
   const protocol =
@@ -72,8 +73,8 @@ export async function generateMetadata() {
 }
 
 export default async function HomePage() {
-  const gridSize = 120;
-  const pixelSize = 5;
+  const gridSize = 120; // This should match the grid size in Roblox
+  const pixelSize = 5; // Size of a given pixel in the canvas
   const modMode = await fetchQuery(api.mod.get);
 
   if (modMode) {

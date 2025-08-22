@@ -1,9 +1,7 @@
-@import "leaflet/dist/leaflet.css";
 @import "tailwindcss";
 @import "tw-animate-css";
-/*
-  ---break---
-*/
+
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -11,14 +9,6 @@
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
   *,
   ::after,
@@ -28,9 +18,8 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 }
-/*
-  ---break---
-*/
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -68,9 +57,8 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 }
-/*
-  ---break---
-*/
+
+/* Styles for tailwind and Shadcn/UI */
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -105,9 +93,6 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
-/*
-  ---break---
-*/
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -141,9 +126,7 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-/*
-  ---break---
-*/
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -151,20 +134,4 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-.leaflet-tile {
-  visibility: visible !important;
-}
-
-.leaflet-map-pane {
-  z-index: 1 !important;
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-.leaflet-container {
-    z-index: 0;
-    transform: translateZ(0);
-    will-change: transform;
 }
