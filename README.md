@@ -1,5 +1,7 @@
 # TheCanvasV1
 
+[![Live Example](https://thecanvasv1.altie122.xyz/api/image)](https://thecanvasv1.altie122.xyz/)
+
 A collaborative pixel art platform inspired by r/place, where users can draw on a shared canvas for all to see! Built with modern web technologies and integrated with Roblox.
 
 This project is made to be used with the [TheCanvasV1 Roblox game](https://github.com/Altie122/thecanvasv1).
