@@ -6,23 +6,21 @@ import { generateCanvasImage } from "@/lib";
 export async function GET(_request: Request) {
   try {
     const imgBuffer = await generateCanvasImage();
-    const base64Image = imgBuffer.toString("base64");
-    // Return a JSON object with the Base64 string, so it's easier to parse
-    return new Response(
-      JSON.stringify({ base64Image: base64Image }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 200,
+    // Return the image buffer directly with PNG content type
+    return new Response(imgBuffer, {
+      headers: {
+        "Content-Type": "image/png",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
       },
-    );
+      status: 200,
+    });
   } catch (error) {
     console.error("Error generating canvas image:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to generate image" }),
-      {
-        headers: { "Content-Type": "application/json" },
-        status: 500,
-      },
-    );
+    return new Response(JSON.stringify({ error: "Failed to generate image" }), {
+      headers: { "Content-Type": "application/json" },
+      status: 500,
+    });
   }
 }
