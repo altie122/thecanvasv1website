@@ -14,9 +14,7 @@ This project is made to be used with the [TheCanvasV1 Roblox game](https://githu
 - **Live Updates**: See changes from other users instantly
 - **Roblox Integration**: Connected to Roblox DataStore for cross-platform functionality
 - **Moderation System**: Built-in moderation mode for maintenance
-- **Responsive Design**: Works on desktop and mobile devices
 - **Image Generation**: Automatic generation of canvas images for social sharing
-- **User Tracking**: Optional user ID tracking for pixel attribution
 
 ## 🛠️ Tech Stack
 
